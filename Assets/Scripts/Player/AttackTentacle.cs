@@ -20,6 +20,7 @@ public class AttackTentacle : MonoBehaviour
     private Vector2 cursorVelocity;
     public float ForceScalingFactor = 0.1f;
     public float maxDistance = 5f; // Adjust this value as needed
+    public float DetachmentActivationSpeed = 3f;
 
     // Use this for initialization
     void Start()
@@ -89,7 +90,6 @@ public class AttackTentacle : MonoBehaviour
             {
                 isLatched = true;
                 latchedObject = targetObject;
-            
                 RopeSegment lastSegment = ropeSegments[ropeSegments.Count - 1];
                 lastSegment.posNow = targetObject.transform.position;
                 ropeSegments[ropeSegments.Count - 1] = lastSegment;
@@ -98,23 +98,36 @@ public class AttackTentacle : MonoBehaviour
     }
 
 
+
     private void DetachLatchedObject()
+{
+    if (isLatched && latchedObject != null)
     {
-        if (isLatched && latchedObject != null)
+        Rigidbody2D rb2d = latchedObject.GetComponent<Rigidbody2D>();
+        if (rb2d != null)
         {
-            Vector2 forceDirection = cursorVelocity.normalized;
-            float forceMagnitude = cursorVelocity.magnitude * ForceScalingFactor;
+            // Get the velocity of the last rope segment
+            Vector2 lastSegmentVelocity = (ropeSegments[segmentLength - 1].posNow - ropeSegments[segmentLength - 1].posOld) / Time.fixedDeltaTime;
 
-            Rigidbody2D rb2d = latchedObject.GetComponent<Rigidbody2D>();
-            if (rb2d != null)
+            // Calculate force direction and magnitude based on the last segment's velocity
+            Vector2 forceDirection = lastSegmentVelocity.normalized;
+            float forceMagnitude = lastSegmentVelocity.magnitude * ForceScalingFactor;
+
+            // Apply the force to the latched object
+            rb2d.AddForce(forceDirection * forceMagnitude, ForceMode2D.Impulse);
+
+            EnemyDestroyer enemyDestroyer = latchedObject.GetComponent<EnemyDestroyer>();
+            if (enemyDestroyer != null && lastSegmentVelocity.magnitude > DetachmentActivationSpeed)
             {
-                rb2d.AddForce(forceDirection * forceMagnitude, ForceMode2D.Impulse);
+                enemyDestroyer.enabled = true;
             }
-
-            isLatched = false;
-            latchedObject = null;
         }
+
+        isLatched = false;
+        latchedObject = null;
     }
+}
+
 
     private void Simulate()
     {

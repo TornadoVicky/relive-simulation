@@ -19,7 +19,7 @@ public class EnemyScript : MonoBehaviour
     private float timeSinceLastChange;
     private float timeSinceLastPatrolChange; // New variable for tracking patrol change
     private float timeSinceLastPatrolStand;  // New variable for tracking time at a patrol point
-    private bool isRunning = false;
+    private bool usePatrolPoint2;
 
     private enum EnemyMode
     {
@@ -39,6 +39,8 @@ public class EnemyScript : MonoBehaviour
         timeSinceLastChange = Time.time;
         timeSinceLastPatrolChange = Time.time;
         timeSinceLastPatrolStand = Time.time;
+
+        usePatrolPoint2 = patrolPoint2 != null;
     }
 
     private void Update()
@@ -82,31 +84,46 @@ public class EnemyScript : MonoBehaviour
 
     private void MoveTowardsPatrolPoint(float speed)
     {
-        // Check if it's time to stand at the patrol point
-        if (Time.time - timeSinceLastPatrolChange > patrollingDuration)
+        if (!usePatrolPoint2) // Check if patrolPoint2 is not assigned
         {
-            if (Time.time - timeSinceLastPatrolStand > patrolStandDuration)
-            {
-                SwitchPatrolPoint();
-            }
+            Vector2 direction = (patrolPoint1.position - transform.position).normalized;
+            rb.velocity = direction * speed;
         }
+        else
+        {
+            if (Time.time - timeSinceLastPatrolChange > patrollingDuration)
+            {
+                if (Time.time - timeSinceLastPatrolStand > patrolStandDuration)
+                {
+                    SwitchPatrolPoint();
+                }
+            }
 
-        Vector2 direction = (currentPatrolPoint.position - transform.position).normalized;
-        rb.velocity = direction * speed;
+            Vector2 direction = (currentPatrolPoint.position - transform.position).normalized;
+            rb.velocity = direction * speed;
+        }
     }
-
+    
     private void MoveAwayFromPlayer(float speed)
-{
-    Vector2 toPoint1 = (patrolPoint1.position - transform.position).normalized;
-    Vector2 toPoint2 = (patrolPoint2.position - transform.position).normalized;
-    Vector2 runDirection = (player.position - transform.position).normalized;
+    {
+        if (!usePatrolPoint2)
+        {
+            Vector2 toPoint1 = (patrolPoint1.position - transform.position).normalized;
+            rb.velocity = toPoint1 * speed * runSpeedMultiplier;
+        }
+        else
+        {
+            Vector2 toPoint1 = (patrolPoint1.position - transform.position).normalized;
+            Vector2 toPoint2 = (patrolPoint2.position - transform.position).normalized;
+            Vector2 runDirection = (player.position - transform.position).normalized;
 
-    float angleToPoint1 = Vector2.Angle(runDirection, toPoint1);
-    float angleToPoint2 = Vector2.Angle(runDirection, toPoint2);
+            float angleToPoint1 = Vector2.Angle(runDirection, toPoint1);
+            float angleToPoint2 = Vector2.Angle(runDirection, toPoint2);
 
-    Vector2 awayDirection = angleToPoint1 > angleToPoint2 ? toPoint1 : toPoint2;
-    rb.velocity = awayDirection * speed * runSpeedMultiplier;
-}
+            Vector2 awayDirection = angleToPoint1 > angleToPoint2 ? toPoint1 : toPoint2;
+            rb.velocity = awayDirection * speed * runSpeedMultiplier;
+        }
+    }
 
 
     private void SwitchPatrolPoint()

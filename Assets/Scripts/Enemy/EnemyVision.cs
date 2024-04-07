@@ -4,8 +4,10 @@ public class EnemyVision : MonoBehaviour
 {
     public Collider2D detectionCollider;
     public EnemyScript enemy;
-    public GameObject eye1; // Reference to eye1 GameObject
-    public GameObject eye2; // Reference to eye2 GameObject
+    public GameObject NormalEye1; // Reference to eye1 GameObject
+    public GameObject NormalEye2; // Reference to eye2 GameObject
+    public GameObject ScaredEye1; // Reference to eye1 GameObject
+    public GameObject ScaredEye2; // Reference to eye2 GameObject
 
     private bool playerDetected = false;
 
@@ -18,13 +20,15 @@ public class EnemyVision : MonoBehaviour
             playerDetected = true;
 
             // Disable eye1 and enable eye2
-            if (eye1 != null)
+            if (NormalEye1 != null && NormalEye2 != null)
             {
-                eye1.SetActive(false);
+                NormalEye1.SetActive(false);
+                NormalEye2.SetActive(false);
             }
-            if (eye2 != null)
+            if (ScaredEye1 != null && ScaredEye2 != null)
             {
-                eye2.SetActive(true);
+                ScaredEye1.SetActive(true);
+                ScaredEye2.SetActive(true);
             }
         }
     }

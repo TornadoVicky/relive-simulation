@@ -4,7 +4,7 @@ public class SpriteFlipper : MonoBehaviour
 {
     public Rigidbody2D targetRigidbody; // Reference to the Rigidbody whose velocity will be checked
     public float velocityChangeThreshold = 0.1f; // Minimum velocity change for rotation
-    public float rotationLerpSpeed = 5f; // Speed of rotation interpolation
+    public float rotationSpeed = 500f; // Speed of rotation
 
     private Quaternion targetRotation;
 
@@ -26,8 +26,11 @@ public class SpriteFlipper : MonoBehaviour
                     targetRotation = Quaternion.Euler(0, 0, 0); // Facing left
                 }
 
-                // Smoothly rotate towards the target rotation using lerp
-                transform.rotation = Quaternion.Lerp(transform.rotation, targetRotation, rotationLerpSpeed * Time.deltaTime);
+                // Set the rotation directly without lerping
+                transform.rotation = targetRotation;
+
+                // Alternatively, you can use RotateTowards for a gradual rotation
+                // transform.rotation = Quaternion.RotateTowards(transform.rotation, targetRotation, rotationSpeed * Time.deltaTime);
             }
         }
         else
