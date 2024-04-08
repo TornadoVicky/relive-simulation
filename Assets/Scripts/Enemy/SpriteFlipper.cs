@@ -3,35 +3,54 @@ using UnityEngine;
 public class SpriteFlipper : MonoBehaviour
 {
     public Rigidbody2D targetRigidbody; // Reference to the Rigidbody whose velocity will be checked
-    public float velocityChangeThreshold = 0.1f; // Minimum velocity change for rotation
+    public Transform playerTransform; // Reference to the player's transform
+    public bool isShooterMode = false; // Flag to indicate if in ShooterMode
     public float rotationSpeed = 500f; // Speed of rotation
 
     private Quaternion targetRotation;
 
     private void Update()
     {
-        if (targetRigidbody != null)
+        if (isShooterMode)
+        {
+            // Rotate to face the player
+            Vector2 direction = playerTransform.position - transform.position;
+            float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
+
+            // Adjust rotation based on player position relative to the enemy
+            if (direction.x > 0)
+            {
+                // Player is to the right of the enemy
+                targetRotation = Quaternion.Euler(0, 180, -angle);
+            }
+            else
+            {
+                // Player is to the left of the enemy
+                targetRotation = Quaternion.Euler(0, 0, angle + 180);
+            }
+
+            // Apply rotation using RotateTowards
+            transform.rotation = Quaternion.RotateTowards(transform.rotation, targetRotation, rotationSpeed * Time.deltaTime);
+        }
+        else if (targetRigidbody != null)
         {
             float currentVelocityX = targetRigidbody.velocity.x;
 
-            if (Mathf.Abs(currentVelocityX) > velocityChangeThreshold)
+            if (Mathf.Abs(currentVelocityX) > 0.1f)
             {
                 // Determine the target rotation based on the velocity direction
-                if (targetRigidbody.velocity.x > 0)
+                if (currentVelocityX > 0)
                 {
                     targetRotation = Quaternion.Euler(0, 180, 0); // Facing right
                 }
-                else if (targetRigidbody.velocity.x < 0)
+                else if (currentVelocityX < 0)
                 {
                     targetRotation = Quaternion.Euler(0, 0, 0); // Facing left
                 }
-
-                // Set the rotation directly without lerping
-                transform.rotation = targetRotation;
-
-                // Alternatively, you can use RotateTowards for a gradual rotation
-                // transform.rotation = Quaternion.RotateTowards(transform.rotation, targetRotation, rotationSpeed * Time.deltaTime);
             }
+
+            // Apply rotation without using RotateTowards
+            transform.rotation = targetRotation;
         }
         else
         {
