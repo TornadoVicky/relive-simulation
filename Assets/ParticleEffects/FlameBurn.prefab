@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 3396994249372009899}
   - component: {fileID: 2808539651000716461}
   - component: {fileID: 2356151315563483843}
+  - component: {fileID: -4650768939564308924}
   m_Layer: 0
   m_Name: FlameBurn
   m_TagString: Untagged
@@ -43,7 +44,7 @@ ParticleSystem:
   serializedVersion: 8
   lengthInSec: 5
   simulationSpeed: 2
-  stopAction: 0
+  stopAction: 2
   cullingMode: 0
   ringBufferMode: 0
   ringBufferLoopRange: {x: 0, y: 1}
@@ -4889,3 +4890,17 @@ ParticleSystemRenderer:
   m_MeshWeighting2: 1
   m_MeshWeighting3: 1
   m_MaskInteraction: 0
+--- !u!114 &-4650768939564308924
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7605386894404889648}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9df77936c0a2882429ac10833033835b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  damageAmount: 10
+  damageInterval: 0.1

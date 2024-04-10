@@ -39,7 +39,7 @@ public class EnemyDestroyer : MonoBehaviour
         MonoBehaviour[] scripts = GetComponents<MonoBehaviour>();
         foreach (var script in scripts)
         {
-            if (script != this) // Exclude this script
+            if (script != this && script.GetType() != typeof(PlayerHealth)) // Exclude this script
                 script.enabled = false;
         }
         head.GetComponent<MonoBehaviour>().enabled = false;

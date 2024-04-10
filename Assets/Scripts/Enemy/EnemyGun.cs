@@ -7,6 +7,7 @@ public class EnemyGun : MonoBehaviour
     public int damageAmount = 10;
     public ParticleSystem shootEffect; // Reference to the particle effect system
     public Collider2D damageCollider; // Reference to the damage collider
+    public AudioSource FlamethrowerAudioSource;
 
     private float shootTimer;
 
@@ -20,7 +21,7 @@ public class EnemyGun : MonoBehaviour
             // Check if it's time to shoot based on the shoot interval
             if (shootTimer >= shootInterval)
             {
-                Shoot();
+                //Shoot();
                 shootTimer = 0f; // Reset the timer
             }
         }
@@ -35,6 +36,7 @@ public class EnemyGun : MonoBehaviour
         if (shootEffect != null)
         {
             shootEffect.Play();
+            FlamethrowerAudioSource.Play();
         }
     }
 
@@ -46,6 +48,7 @@ public class EnemyGun : MonoBehaviour
         if (shootEffect != null)
         {
             shootEffect.Stop();
+            FlamethrowerAudioSource.Stop();
         }
     }
 

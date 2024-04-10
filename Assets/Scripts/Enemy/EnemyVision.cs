@@ -11,6 +11,7 @@ public class EnemyVision : MonoBehaviour
     public GameObject NormalEye2; // Reference to eye2 GameObject
     public GameObject ScaredEye1; // Reference to eye1 GameObject
     public GameObject ScaredEye2; // Reference to eye2 GameObject
+    public AudioSource ScaredAudioSource;
 
     public bool hasGun = true; // Indicates if the enemy has a gun
 
@@ -51,6 +52,8 @@ public class EnemyVision : MonoBehaviour
                 ScaredEye2.SetActive(true);
 
                 scared = true;
+                
+                ScaredAudioSource.Play();
             }
         }
     }

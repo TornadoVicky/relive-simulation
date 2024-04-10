@@ -1,10 +1,11 @@
 using UnityEngine;
-using System;
 
 public class PlayerHealth : MonoBehaviour
 {
     public int maxHealth = 100;
-    [SerializeField] private int currentHealth;
+    public int currentHealth;
+
+    private bool deathCounterIncreased = false;
 
     void Start()
     {
@@ -32,9 +33,36 @@ public class PlayerHealth : MonoBehaviour
 
     void Die()
     {
-        // Perform actions when the player dies
-        Debug.Log("Player has died.");
         // For example, you can deactivate the player gameObject or trigger a game over sequence
-        gameObject.SetActive(false);
+        //gameObject.SetActive(false);
+
+        // Check if the gameObject's layer is "Player"
+        if (gameObject.layer == LayerMask.NameToLayer("Player"))
+        {
+            PlayerController playerController = GetComponent<PlayerController>();
+            if (playerController != null)
+            {
+                playerController.isTentacleMode = false;
+                playerController.ToggleAIObjectsAndSelectors(false);
+                playerController.enabled = false;
+            }
+
+            // Check if the player is within the area of a DeathAreaCounter
+            Collider2D[] colliders = Physics2D.OverlapCircleAll(transform.position, 0.1f); // Adjust radius as needed
+            foreach (Collider2D col in colliders)
+            {
+                DeathAreaCounter deathArea = col.GetComponent<DeathAreaCounter>();
+                if (deathArea != null && !deathCounterIncreased)
+                {
+                    deathArea.IncreaseDeathCounter();
+                    deathCounterIncreased = true;
+                    break; // Exit the loop after increasing the death counter
+                }
+            }
+        }
+        else
+        {
+            gameObject.SetActive(false);
+        }
     }
 }

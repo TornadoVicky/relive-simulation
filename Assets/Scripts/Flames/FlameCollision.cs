@@ -38,22 +38,24 @@ public class FlameCollision : MonoBehaviour
     }
 
     private void OnParticleCollision(GameObject other)
-    {
-        int numCollisionEvents = part.GetCollisionEvents(other, collisionEvents);
+{
+    int numCollisionEvents = part.GetCollisionEvents(other, collisionEvents);
 
-        int i = 0;
-        while (i < numCollisionEvents)
+    int i = 0;
+    while (i < numCollisionEvents)
+    {
+        Vector3 collisionPoint = collisionEvents[i].intersection;
+        Vector3 collisionNormal = collisionEvents[i].normal; // Get the collision normal
+        if (IsFarEnoughFromRecordedPoints(collisionPoint))
         {
-            Vector3 collisionPoint = collisionEvents[i].intersection;
-            if (IsFarEnoughFromRecordedPoints(collisionPoint))
-            {
-                InstantiateCollisionEffect(collisionPoint, other);
-                recordedCollisionPoints.Add(collisionPoint);
-                recordedPointTimers.Add(recordedPointDuration);
-            }
-            i++;
+            InstantiateCollisionEffect(collisionPoint, other, collisionNormal); // Pass the collision normal
+            recordedCollisionPoints.Add(collisionPoint);
+            recordedPointTimers.Add(recordedPointDuration);
         }
+        i++;
     }
+}
+
 
     private bool IsFarEnoughFromRecordedPoints(Vector3 point)
     {
@@ -67,17 +69,23 @@ public class FlameCollision : MonoBehaviour
         return true; // Far enough from all recorded points
     }
 
-    private void InstantiateCollisionEffect(Vector3 collisionPoint, GameObject collidedObject)
+    private void InstantiateCollisionEffect(Vector3 collisionPoint, GameObject collidedObject, Vector3 collisionNormal)
+{
+    if (collisionEffectPrefab != null && collidedObject != null &&
+        ((1 << collidedObject.layer) & layerToFollow) != 0)
     {
-        if (collisionEffectPrefab != null && collidedObject != null &&
-            ((1 << collidedObject.layer) & layerToFollow) != 0)
-        {
-            GameObject effect = Instantiate(collisionEffectPrefab, collisionPoint, Quaternion.identity);
-            effect.transform.SetParent(collidedObject.transform);
-        }
-        else
-        {
-            Debug.LogWarning("Collision effect prefab is not assigned or collided object is null, or layer mismatch.");
-        }
+        GameObject effect = Instantiate(collisionEffectPrefab, collisionPoint, Quaternion.identity);
+
+        // Calculate the rotation based on the collision normal
+        Quaternion rotation = Quaternion.FromToRotation(Vector3.up, collisionNormal);
+        effect.transform.rotation = rotation;
+
+        effect.transform.SetParent(collidedObject.transform);
     }
+    else
+    {
+        Debug.LogWarning("Collision effect prefab is not assigned or collided object is null, or layer mismatch.");
+    }
+}
+
 }

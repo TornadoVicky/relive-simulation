@@ -7,31 +7,20 @@ public class PlayerController : MonoBehaviour
     public float normalMoveSpeed = 5f;
     public float tentacleMoveSpeed = 3f;
     public float jumpForce = 15f;
-    public float jumpTime = 0.5f;
     public float coyoteTime = 0.2f;
-    public float dashForce = 10f;
-    public float dashingVelocity = 14f;
-    public float dashingTime = 0.5f;
 
     public LayerMask ground;
     public Transform feetPos;
 
-    private bool isTentacleMode = false;
+    public bool isTentacleMode = false;
     private Rigidbody2D rb;
     private bool isGrounded;
     private bool isJumping;
-    private float jumpCounter;
-    private bool canDoubleJump = true;
     private float currentCoyoteTime = 0.2f;
-    private Vector2 dashDirection;
-    private bool isDashing;
-    private bool canDash = true;
-
+    public float jumpGravityScale = 2f;
+    public AudioSource moveAudioSource;
 
     [Header("Abilities")]
-    public bool doubleJump = true;
-    public bool dash = true;
-    public bool sprint;
     public bool coyoteJump = true;
 
     public float tentacleSpreadAngle = 180f;
@@ -48,40 +37,16 @@ public class PlayerController : MonoBehaviour
         isGrounded = Physics2D.OverlapCircle(feetPos.position, 0.1f, ground);
         float moveSpeed = isTentacleMode ? tentacleMoveSpeed : normalMoveSpeed;
 
-        // Dash Input
-        var dashInput = Input.GetKeyDown(KeyCode.X);
-
-        if(dash == true)
+        if (isTentacleMode && (Mathf.Abs(Input.GetAxis("Horizontal")) > 0.1f || Mathf.Abs(Input.GetAxis("Vertical")) > 0.1f))
         {
-            dashingTime = 0.5f;
+            if (!moveAudioSource.isPlaying)
+            {
+                moveAudioSource.Play();
+            }
         }
         else
         {
-            dashingTime = 0f;
-        }
-
-        if(dashInput && canDash)
-        {
-            isDashing = true;
-            canDash = false;
-            dashDirection = new Vector2(Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical"));
-            if(dashDirection == Vector2.zero)
-            {
-                dashDirection = new Vector2(transform.localScale.x, 0);
-            }
-
-            StartCoroutine(StopDashing());
-        }
-
-        if (isDashing)
-        {
-            rb.velocity = dashDirection.normalized * dashingVelocity;
-            return;
-        }
-
-        if (isGrounded)
-        {
-            canDash = true;
+            moveAudioSource.Stop(); // Stop the audio if not moving or not in tentacle mode
         }
 
         // Decrease coyote time
@@ -100,32 +65,39 @@ public class PlayerController : MonoBehaviour
             if (isGrounded || currentCoyoteTime > 0)
             {
                 isJumping = true;
-                jumpCounter = 0f;
                 rb.velocity = new Vector2(rb.velocity.x, jumpForce);
-                canDoubleJump = true;
                 currentCoyoteTime = 0;
-            }
-            else if (doubleJump && canDoubleJump)
-            {
-                isJumping = true;
-                jumpCounter = 0f;
-                rb.velocity = new Vector2(rb.velocity.x, jumpForce);
-                canDoubleJump = false;
             }
         }
 
         // Variable jump height logic
-        if (isJumping)
+        if (isJumping && !Input.GetButton("Jump"))
         {
-            if (Input.GetButton("Jump") && jumpCounter < jumpTime)
-            {
-                rb.velocity = new Vector2(rb.velocity.x, jumpForce);
-                jumpCounter += Time.deltaTime;
-            }
-            else
-            {
-                isJumping = false;
-            }
+            isJumping = false;
+        }
+
+        if (!isTentacleMode)
+        {
+            // Normal Mode
+            float horizontalInput = Input.GetAxis("Horizontal");
+            rb.velocity = new Vector2(horizontalInput * moveSpeed, rb.velocity.y);
+        }
+        else
+        {
+            // Tentacle Mode
+            float horizontalInput = Input.GetAxis("Horizontal");
+            float verticalInput = Input.GetAxis("Vertical");
+            rb.velocity = new Vector2(horizontalInput * moveSpeed, verticalInput * moveSpeed);
+        }
+
+        // Adjust gravity for faster descent
+        if (rb.velocity.y < 0) // Check if the player is falling
+        {
+            rb.gravityScale = 5.5f; // Increase gravity scale for faster descent
+        }
+        else
+        {
+            rb.gravityScale = 2.5f; // Reset gravity scale to normal if ascending or grounded
         }
 
         if (!isTentacleMode)
@@ -186,7 +158,7 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-    private void ToggleAIObjectsAndSelectors(bool enable)
+    public void ToggleAIObjectsAndSelectors(bool enable)
     {
         RandomPointSelector[] selectors = FindObjectsOfType<RandomPointSelector>();
 
@@ -198,11 +170,5 @@ public class PlayerController : MonoBehaviour
             }
             selector.enabled = enable;
         }
-    }
-
-    private IEnumerator StopDashing()
-    {
-        yield return new WaitForSeconds(dashingTime);
-        isDashing = false;
     }
 }

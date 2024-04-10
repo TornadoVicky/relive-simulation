@@ -40,7 +40,7 @@ public class AttackTentacle : MonoBehaviour
     {
         this.DrawRope();
 
-        if (Input.GetMouseButtonDown(1))
+        if (Input.GetMouseButtonDown(0))
         {
             Vector3 mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
             Collider2D hitCollider = Physics2D.OverlapCircle(mousePosition, 0.1f, objectLayerMask);
@@ -51,7 +51,7 @@ public class AttackTentacle : MonoBehaviour
             }
         }
 
-        if (Input.GetMouseButtonUp(1))
+        if (Input.GetMouseButtonUp(0))
         {
             DetachLatchedObject();
         }
