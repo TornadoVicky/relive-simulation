@@ -30,13 +30,7 @@ public class DialogueHandler : MonoBehaviour
 
     private void Start()
     {
-        foreach (DialogueKey key in dialogueKeys)
-        {
-            if (key.dialogueSet.dialogues.Count == 0)
-            {
-                Debug.LogError("DialogueSet is empty! Please assign dialogues for key: " + key.areaNumber);
-            }
-        }
+
     }
 
     public void ShowDialogueSet(int areaNumber, int deathCounter)
@@ -49,8 +43,6 @@ public class DialogueHandler : MonoBehaviour
                 return; // Exit the method after finding the matching key
             }
         }
-
-        Debug.LogWarning("Dialogue set not found for the provided key.");
     }
 
     private IEnumerator DisplayDialogues(List<string> dialogues)

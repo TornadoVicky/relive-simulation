@@ -56,7 +56,6 @@ public class EnemyGun : MonoBehaviour
     {
         if (damageCollider == null)
         {
-            Debug.LogWarning("Damage collider not set.");
             return;
         }
 

@@ -14,10 +14,6 @@ public class DoorThrow : MonoBehaviour
                 // Enable the EnemyDestroyer script
                 enemyDestroyer.enabled = true;
             }
-            else
-            {
-                Debug.LogWarning("EnemyDestroyer script not found on the collided object.");
-            }
         }
     }
 }

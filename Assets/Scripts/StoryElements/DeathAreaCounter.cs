@@ -31,18 +31,12 @@ public class DeathAreaCounter : MonoBehaviour
         {
             deathCounter = dialogueTrigger.deathCounter;
             deathCounter++;
-            
-            Debug.Log("Area " + areaNumber + " - Death Counter: " + deathCounter);
 
             dialogueTrigger.areaNumber = areaNumber;
             dialogueTrigger.deathCounter = deathCounter;
 
             // Activate the animator and wait before loading next scene
             StartCoroutine(LoadNextSceneWithDelay());
-        }
-        else
-        {
-            Debug.LogWarning("DialogueTrigger not found in the scene.");
         }
     }
 

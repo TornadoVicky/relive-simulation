@@ -39,9 +39,5 @@ public class FireDamage : MonoBehaviour
             // Apply damage to the player's health
             playerHealth.TakeDamage(damageAmount);
         }
-        // else
-        // {
-        //     Debug.LogWarning("PlayerHealth component is null, invalid, or disabled.");
-        // }
     }
 }

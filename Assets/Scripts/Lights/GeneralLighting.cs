@@ -22,11 +22,6 @@ public class GeneralLighting : MonoBehaviour
             light2D = GetComponent<Light2D>();
         }
 
-        if (light2D == null)
-        {
-            Debug.LogError("Light2D component not found.");
-        }
-
         // Start with color1
         light2D.color = color1;
         timer = color1Duration;

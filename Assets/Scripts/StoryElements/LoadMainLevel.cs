@@ -16,12 +16,6 @@ public class LoadMainLevel : MonoBehaviour
     {
         // Get the reference to the 2D collider component
         myCollider = GetComponent<Collider2D>();
-
-        // Make sure the collider is not null
-        if (myCollider == null)
-        {
-            Debug.LogError("Collider2D component not found!");
-        }
     }
 
     void OnTriggerEnter2D(Collider2D other)

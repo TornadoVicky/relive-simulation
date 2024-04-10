@@ -52,9 +52,5 @@ public class SpriteFlipper : MonoBehaviour
             // Apply rotation without using RotateTowards
             transform.rotation = targetRotation;
         }
-        else
-        {
-            Debug.LogWarning("Target Rigidbody is not set.");
-        }
     }
 }

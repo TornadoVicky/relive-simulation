@@ -11,8 +11,6 @@ public class DoorBreaker : MonoBehaviour
         hingeJoint = GetComponent<HingeJoint2D>();
         if (hingeJoint == null)
         {
-            Debug.LogError("HingeJoint2D component not found!");
-            // Disable this script if HingeJoint2D is not found
             enabled = false;
             return;
         }

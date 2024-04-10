@@ -82,10 +82,6 @@ public class FlameCollision : MonoBehaviour
 
         effect.transform.SetParent(collidedObject.transform);
     }
-    else
-    {
-        Debug.LogWarning("Collision effect prefab is not assigned or collided object is null, or layer mismatch.");
-    }
 }
 
 }

@@ -21,10 +21,6 @@ public class MenuButtons : MonoBehaviour
         {
             button.onClick.AddListener(OnButtonClick);
         }
-        else
-        {
-            Debug.LogWarning("Button component not found!");
-        }
     }
 
     void OnButtonClick()

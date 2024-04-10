@@ -74,9 +74,5 @@ public class DialogueTrigger : MonoBehaviour
         {
             dialogueHandler.ShowDialogueSet(areaNumber, deathCounter);
         }
-        else
-        {
-            Debug.LogWarning("DialogueHandler not found.");
-        }
     }
 }

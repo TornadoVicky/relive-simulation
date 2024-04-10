@@ -33,9 +33,6 @@ public class PlayerHealth : MonoBehaviour
 
     void Die()
     {
-        // For example, you can deactivate the player gameObject or trigger a game over sequence
-        //gameObject.SetActive(false);
-
         // Check if the gameObject's layer is "Player"
         if (gameObject.layer == LayerMask.NameToLayer("Player"))
         {
